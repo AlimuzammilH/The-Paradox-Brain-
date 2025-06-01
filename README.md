@@ -32,7 +32,7 @@ A tool. Not a chatbot, not a search engine. It takes opposing ideas and forces t
 
 ## **How to Use It**  
 ### **Basic**  
-```
+```bash  
 python main.py  
 ```  
 **Example**:  
@@ -41,6 +41,13 @@ python main.py
 > Freedom requires collective action  
 [Output truncated for brevity]  
 ```  
+
+### **Advanced**  
+Train it on your own conflicts:  
+```bash  
+python train.py --data ./data/your_arguments.csv --epochs 2  
+```  
+
 ### **2. Key Modules (How I Structured It)**  
 | **Module**              | **What It Does**                                                                 | **Why I Added It** |  
 |-------------------------|----------------------------------------------------------------------------------|--------------------|  
