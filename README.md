@@ -1,4 +1,3 @@
-# Paradox
 # **PARADOX**  
 *A Quiet Engine for Hard Thoughts*  
 
