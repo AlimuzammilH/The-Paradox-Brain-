@@ -3,8 +3,12 @@
 
 ---
 
-## **What is Paradox**  
-Paradox is a locally-run, hybrid neural-symbolic system designed to analyze opposing arguments, identify their core tensions, and generate syntheses that transcend simple compromise. Unlike language models that merely summarize or debate superficially, Paradox employs recursive analysis to deconstruct ideological conflicts—weighing logical consistency, contextual relevance, and user-defined preferences.    It operates in three phases:   1. **Tension Identification** (neural contradiction detection)   2. **Synthesis Generation** (symbolic logic + adaptive learning)   3. **Iterative Refinement** (user feedback integration)    Built for privacy and precision, it avoids cloud dependencies and runs efficiently on consumer hardware. 
+## **What is Paradox**  ##
+Paradox is a locally-run, hybrid neural-symbolic system designed to analyze opposing arguments, identify their core tensions, and generate syntheses that transcend simple compromise. Unlike language models that merely summarize or debate superficially, Paradox employs recursive analysis to deconstruct ideological conflicts—weighing logical consistency, contextual relevance, and user-defined preferences.    
+It operates in three phases:   
+1. **Tension Identification** (neural contradiction detection)   
+2. **Synthesis Generation** (symbolic logic + adaptive learning)   
+3. **Iterative Refinement** (user feedback integration)    Built for privacy and precision, it avoids cloud dependencies and runs efficiently on consumer hardware. 
 ---
 
 ## **How It works**  
