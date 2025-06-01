@@ -56,13 +56,10 @@ python train.py --data ./data/your_arguments.csv --epochs 2
 | **Symbolic Engine**     | Hardcoded philosophical rules (Hegel, Kant, Rawls)                              | So it doesn’t just parrot Reddit-tier takes |  
 | **Memory Store**        | FAISS + SQLite—remembers past arguments for faster recall                        | Because I hate repeating myself |  
 | **Feedback Loop**       | Learns from my ratings (1-5 stars) and adjusts over time                         | So it gets smarter *for me*, not some average user |  
-### **Advanced**  
-Train it 
-python train.py --data ./data/your_arguments.csv --epochs 2  
-```  
+
 
 ### **UI (Optional)**  
-A dark-mode interface exists. It shows a brain, not because it’s accurate, but because it reminds users this is a tool, not a friend.  
+A dark-mode interface exists. It shows a brain, not because it’s accurate, but because it reminds users this is a tool, and makes it look more intuitive..  
 
 ---
 
