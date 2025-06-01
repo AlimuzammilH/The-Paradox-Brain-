@@ -8,7 +8,7 @@ A tool. Not a chatbot, not a search engine. It takes opposing ideas and forces t
 
 ---
 
-## **How It Moves**  
+## **How It works**  
 ### **1. Structure**  
 - **Input Loader**  
   - Accepts text, cleans it, splits arguments  
@@ -41,7 +41,14 @@ python main.py
 > Freedom requires collective action  
 [Output truncated for brevity]  
 ```  
-
+### **2. Key Modules (How I Structured It)**  
+| **Module**              | **What It Does**                                                                 | **Why I Added It** |  
+|-------------------------|----------------------------------------------------------------------------------|--------------------|  
+| **Orchestrator**        | Decides which subsystem (neural/symbolic) to use based on input                  | To prevent dumb, one-size-fits-all answers |  
+| **Contradiction Engine**| Uses a tiny neural net to detect logical conflicts (not just keyword matching)    | Because real debate requires understanding tension |  
+| **Symbolic Engine**     | Hardcoded philosophical rules (Hegel, Kant, Rawls)                              | So it doesn’t just parrot Reddit-tier takes |  
+| **Memory Store**        | FAISS + SQLite—remembers past arguments for faster recall                        | Because I hate repeating myself |  
+| **Feedback Loop**       | Learns from my ratings (1-5 stars) and adjusts over time                         | So it gets smarter *for me*, not some average user |  
 ### **Advanced**  
 Train it 
 python train.py --data ./data/your_arguments.csv --epochs 2  
