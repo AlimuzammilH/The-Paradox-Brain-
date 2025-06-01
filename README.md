@@ -40,8 +40,87 @@ python main.py
 > Freedom requires individualism  
 > Freedom requires collective action  
 [Output truncated for brevity]  
-```  
+``` 
+### **Installation Requirements**  
+#### **Core Dependencies**  
+```bash
+# Python (3.10+)
+pip install torch sentence-transformers faiss-cpu sqlite3 fastapi uvicorn
 
+# For training (optional)
+pip install datasets transformers scikit-learn
+```
+
+#### **For the UI**  
+```bash
+# Frontend (Vue.js)
+npm install -g @vue/cli
+npm install axios vue-router
+
+# Backend (FastAPI)
+pip install fastapi uvicorn python-multipart
+```
+
+#### **For GPU Acceleration**  
+```bash
+# NVIDIA (CUDA 11.7)
+pip install torch --extra-index-url https://download.pytorch.org/whl/cu117
+```
+
+#### **Optional Tools**  
+```bash
+# Data preprocessing
+pip install pdfminer.six newspaper3k
+
+# Monitoring
+pip install prometheus-client
+```
+
+---
+
+### **Hardware Minimums**  
+| Component | Requirement | Notes |  
+|-----------|-------------|-------|  
+| **GPU** | NVIDIA GTX 1660 Ti (6GB VRAM) | Disable with `--cpu` flag |  
+| **RAM** | 16GB | 8GB usable (without Neo4j) |  
+| **Storage** | 50GB SSD | For vector databases + logs |  
+
+---
+
+### **First-Run Setup**  
+1. **Download Models**  
+   ```bash
+   mkdir -p models
+   python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2', cache_folder='./models')"
+   ```
+
+2. **Initialize Databases**  
+   ```bash
+   python -c "from core.memory import MemoryStore; MemoryStore().init_db()"
+   ```
+
+3. **Launch**  
+   ```bash
+   # CLI version
+   python main.py
+
+   # Web UI
+   cd frontend && npm run serve
+   uvicorn backend.paradox_api:app --reload
+   ```
+
+---
+
+### **Key Files**  
+- `orchestrator.py` → Decision routing  
+- `contradiction_engine.py` → Neural tension analysis  
+- `symbolic_engine.py` → Hardcoded dialectical rules  
+- `memory.py` → FAISS/SQLite integration  
+- `feedback.py` → Adaptive learning loop  
+
+---
+
+*"Tools should sharpen thought, not replace it."*
 ### **Advanced**  
 Train it on your own conflicts:  
 ```bash  
