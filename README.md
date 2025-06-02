@@ -4,7 +4,7 @@
 ---
 
 ## **What is Paradox**  ##
-Paradox is a locally-run, hybrid neural-symbolic system designed to analyze opposing arguments, identify their core tensions, and generate syntheses that transcend simple compromise. Unlike language models that merely summarize or debate superficially, Paradox employs recursive analysis to deconstruct ideological conflicts—weighing logical consistency, contextual relevance, and user-defined preferences.    
+Paradox is a locally run, hybrid neural-symbolic system designed to analyse opposing arguments, identify their core tensions, and generate syntheses that transcend simple compromise. Unlike language models that only summarise or debate superficially, Paradox employs recursive analysis to deconstruct ideological conflicts, weighing logical consistency, contextual relevance, and user-defined preferences.    
 It operates in three phases:   
 1. **Tension Identification** (neural contradiction detection)   
 2. **Synthesis Generation** (symbolic logic + adaptive learning)   
@@ -14,13 +14,13 @@ It operates in three phases:
 ## **How It works**  
 ### **1. Structure**  
 - **Input Loader**  
-  - Accepts text, cleans it, splits arguments  
+  - Accepts text, cleans it, and splits arguments  
   - Doesn’t care about tone, only content  
 - **Contradiction Engine**  
   - Measures tension between ideas (not just similarity)  
   - Uses a small neural net—efficient, not brilliant  
 - **Symbolic Core**  
-  - Hardcoded dialectical patterns (Hegel, but stripped of pretense)  
+  - Hardcoded dialectical patterns (Hegel, but stripped of pretence)  
   - Adjusts weights based on user feedback  
 - **Memory**  
   - Stores arguments as vectors and text  
@@ -111,21 +111,9 @@ pip install prometheus-client
    cd frontend && npm run serve
    uvicorn backend.paradox_api:app --reload
    ```
-
----
-
-### **Key Files**  
-- `orchestrator.py` → Decision routing  
-- `contradiction_engine.py` → Neural tension analysis  
-- `symbolic_engine.py` → Hardcoded dialectical rules  
-- `memory.py` → FAISS/SQLite integration  
-- `feedback.py` → Adaptive learning loop  
-
----
-
 *"Tools should sharpen thought, not replace it."*
 ### **Advanced**  
-Train it on your own conflicts:  
+Train it on your conflicts:  
 ```bash  
 python train.py --data ./data/your_arguments.csv --epochs 2  
 ```  
@@ -148,7 +136,7 @@ A dark-mode interface exists. It shows a brain, not because it’s accurate, but
 ## **Why It Exists**  
 - Most debate is performance. This is dissection.  
 - Language models are either too large or too simple. This balances.  
-- The creator wanted something that doesn’t flatter, only processes.  
+-   I  wanted something that doesn’t flatter, only processes.  
 
 ---
 
@@ -156,14 +144,14 @@ A dark-mode interface exists. It shows a brain, not because it’s accurate, but
 - **Hardware**: Runs on modest GPUs (6GB VRAM minimum)  
 - **Data**: Pre-trained on philosophy/politics, but meant to adapt  
 - **Limitations**:  
-  - Struggles with humor  
+  - Struggles with humour  
   - Doesn’t handle raw emotion well  
   - Will not pretend to care  
 
 ---
 
 ## **License**  
-MIT. Use it, modify it, but don’t claim it as yours.  
+Use it, modify it, but don’t claim it as yours.  
 
 ---
 
