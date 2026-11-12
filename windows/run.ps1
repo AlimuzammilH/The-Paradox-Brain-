@@ -12,12 +12,12 @@ function Find-Python {
     $ErrorActionPreference = "Continue"   # the py launcher complains on stderr about missing versions; that's expected
     if (Have "py") {
         foreach ($v in "3.13", "3.12", "3.11", "3.10") {
-            & py -$v -c "import sys" 2>$null
+            $null = & py -$v -c "import sys" 2>&1   # discard its messages, or they end up in the return value
             if ($LASTEXITCODE -eq 0) { return ,@("py", "-$v") }
         }
     }
     if (Have "python") {
-        & python -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)" 2>$null
+        $null = & python -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)" 2>&1
         if ($LASTEXITCODE -eq 0) { return ,@("python") }
     }
     return $null
