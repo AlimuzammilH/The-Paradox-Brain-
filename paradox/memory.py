@@ -53,6 +53,12 @@ class Memory:
         rows = self.db.execute("SELECT * FROM turns WHERE session=? ORDER BY id DESC LIMIT ?", (session, n)).fetchall()
         return rows[::-1]
 
+    def last_conclusion(self, session: str) -> sqlite3.Row | None:
+        """The conclusion behind this session's most recent answer, so a restart can pick the thread up again."""
+        row = self.db.execute("SELECT conclusion_id FROM turns WHERE session=? AND role='paradox' AND conclusion_id IS NOT NULL "
+                              "ORDER BY id DESC LIMIT 1", (session,)).fetchone()
+        return self.conclusion(row["conclusion_id"]) if row else None
+
     # conclusions --------------------------------------------------------------------------------
 
     def _vec(self, text: str) -> np.ndarray | None:

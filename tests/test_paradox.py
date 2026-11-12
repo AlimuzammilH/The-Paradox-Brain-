@@ -91,3 +91,13 @@ def test_judge_requires_win_in_both_orders():
             return {key: v for key in k["keys"]}
     assert judge_pair(J(["A", "B"]), "p", "x", "y")["overall"] == "x"
     assert judge_pair(J(["A", "A"]), "p", "x", "y")["overall"] == "tie"   # position bias cancels out
+
+
+def test_session_survives_restart():
+    m = Memory(":memory:", FakeEmbedder())
+    s = Session(FakeLLM(), FakeNLI(), m, session_id="abc", max_depth=1)
+    first = s.send("Freedom requires individualism. Freedom requires collective action.")
+    s2 = Session(FakeLLM(), FakeNLI(), m, session_id="abc", max_depth=1)      # the restart
+    assert s2.restored and s2.last.final.synthesis == first.result.final.synthesis
+    reply = s2.send("That's wrong, institutions crush people.")
+    assert reply.intent == "objection" and reply.result.rounds[0].thesis == first.result.final.synthesis

@@ -14,6 +14,7 @@ import re
 import time
 import uuid
 from dataclasses import dataclass
+from types import SimpleNamespace
 
 from .engine import VOICE, Dialectic, Emit, Result
 from .llm import LLM
@@ -42,6 +43,20 @@ class Session:
         self.engine = Dialectic(llm, nli, weights=memory.move_weight, emit=emit, **engine_kwargs)
         self.last: Result | None = None
         self.last_id: int | None = None
+        self.restored = False
+        self._restore()
+
+    def _restore(self) -> None:
+        """After a restart, reload the last answer of this session so pushback still lands on it."""
+        row = self.memory.last_conclusion(self.id)
+        if row is None:
+            return
+        answer = self.memory.db.execute("SELECT text FROM turns WHERE session=? AND role='paradox' ORDER BY id DESC LIMIT 1",
+                                        (self.id,)).fetchone()["text"]
+        final = SimpleNamespace(synthesis=row["synthesis"], move=row["move"], cost=row["cost"] or "")
+        self.last = SimpleNamespace(question=row["question"], answer=answer, rounds=[final], final=final)
+        self.last_id = row["id"]
+        self.restored = True
 
     def _context(self) -> str:
         return "\n".join(f"{r['role']}: {r['text']}" for r in self.memory.recent(self.id, 6))
@@ -88,7 +103,7 @@ class Session:
                 first, best = result.rounds[0], result.final
                 cid = self.memory.save(result.question, first.thesis, first.antithesis, best.move,
                                        best.synthesis, best.cost, best.score)
-                self.last, self.last_id = result, cid
+                self.last, self.last_id, self.restored = result, cid, False
             reply = Reply(result.answer, intent, cid, result)
         self.memory.add_turn(self.id, "paradox", reply.text, reply.conclusion_id)
         return reply
@@ -115,6 +130,9 @@ class Session:
         """The raw reasoning trace, without the language model in between."""
         if not self.last or not self.last.rounds:
             return "No reasoning to show yet."
+        if self.restored:
+            return (f"Question: {self.last.question}\nThe detailed reasoning for this answer was in an earlier run.\n"
+                    f"Final synthesis ({self.last.final.move}): {self.last.final.synthesis}")
         out = [f"Question: {self.last.question}"]
         for n, r in enumerate(self.last.rounds, 1):
             out += [f"\nRound {n}",
