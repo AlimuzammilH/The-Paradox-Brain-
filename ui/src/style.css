@@ -92,7 +92,9 @@ canvas#gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block
 .ask input::placeholder { color: #9aa8c2; opacity: 1; }
 .ask .go { background: none; border: 1px solid var(--line); color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: .3em; padding: 6px 10px; cursor: pointer; }
 .ask .go:hover { border-color: var(--cyan); color: var(--cyan); }
-.ask.busy { opacity: .35; pointer-events: none; }
+.ask.busy { pointer-events: none; border-bottom-color: rgba(255,226,168,.6); }
+.ask.busy input::placeholder { color: var(--gold); }
+.ask.busy .go { opacity: .3; }
 
 .sound { position: absolute; right: 22px; bottom: max(26px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px; }
 .mute { background: none; border: 1px solid var(--line); color: var(--dim); width: 30px; height: 30px; display: grid; place-items: center; cursor: pointer; }

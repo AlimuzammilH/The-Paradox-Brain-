@@ -108,7 +108,8 @@ class Dialectic:
         data = self.llm.ask_json(
             VOICE,
             f"Input:\n{text}{ctx}{memory}\n\n"
-            "Find the tension in this input. If it states two positions, use them. If it states one position, "
+            "Find the tension in this input. If it states two positions, those ARE the thesis and antithesis: keep "
+            "their exact meaning and only sharpen the wording, never swap in a different debate. If it states one position, "
             "the antithesis is the strongest serious opposing position. If it is a question or dilemma, give "
             "the two strongest opposing answers. State each side in its strongest form, as its best defender "
             "would, in one or two sentences, without straw men.\n"
@@ -273,9 +274,21 @@ class Dialectic:
             "Write the reply to the user. Plain prose, usually 80 to 180 words. Open with the resolution itself, "
             "not with a restatement of the question. Give what each side gets right in a clause, not a paragraph. "
             "Name the cost. If an objection is still standing, say it in one sentence at the end. "
-            "No headings, no lists, no praise of the question, no 'it depends'.", temperature=0.5)
+            "No headings, no lists, no praise of the question. Never write 'both have merits', 'balance', "
+            "'it depends' or 'depends on the context': commit to the resolution.", temperature=0.5)
+        if self._mushy(answer):   # the writer can undo the synthesis by hedging; give it one strict retry
+            answer = self.llm.ask(
+                VOICE,
+                "\n".join(lines) + f"\n\nThis draft hedged instead of committing:\n{answer}\n\n"
+                "Rewrite it, 80 to 160 words. State the resolution as a claim in the first sentence and stand behind it. "
+                "Name the cost plainly. No 'both', no 'balance', no 'context', no 'merits'.", temperature=0.4)
         self.emit("answer", {"answer": answer, "move": best.move, "move_name": BY_KEY[best.move].name, "cost": best.cost})
         return answer
+
+    def _mushy(self, text: str) -> bool:
+        if MUSH_PHRASES.search(text) or re.search(r"\b(have (their )?merits|balance between|specific context)\b", text, re.I):
+            return True
+        return max(r.entailment for r in self.nli.relations([(text, m) for m in MUSH])) > 0.5
 
     # run ----------------------------------------------------------------------------------------
 

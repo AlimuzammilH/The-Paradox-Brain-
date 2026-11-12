@@ -291,15 +291,26 @@ let online = false;
 const session = (() => { try { return localStorage.getItem("paradox.session") || (localStorage.setItem("paradox.session", crypto.randomUUID()), localStorage.getItem("paradox.session")); } catch { return crypto.randomUUID(); } })();
 
 async function run(stream, record = true) {
-  for await (const ev of stream) {
-    if (record) state.log.push(ev);
-    const h = handlers[ev.phase];
-    if (h) await h(ev.data);
+  try {
+    for await (const ev of stream) {
+      if (record) state.log.push(ev);
+      const h = handlers[ev.phase];
+      try { if (h) await h(ev.data); }
+      catch (e) { console.error(e); trace(`<span class="r">display error in ${ev.phase}: ${esc(e.message)}</span>`); }
+    }
+  } catch (e) {
+    trace(`<span class="r">connection lost: ${esc(e.message)}</span>`); phase("ERROR");
+  } finally {
+    setBusy(false);
   }
+}
+function setBusy(on) {
+  $("ask").classList.toggle("busy", on);
+  $("input").placeholder = on ? "Thinking. This takes a few minutes; watch the brain." : (online ? "State a contradiction, or push back on the answer." : `Engine offline. Press enter to watch: "${DEMO_PROMPT}"`);
 }
 
 async function ask(text) {
-  $("ask").classList.add("busy");
+  setBusy(true);
   const followUp = state.answered && online;
   if (!followUp) { resetRound(true); state.log = []; }
   else { resetRound(false); state.round = 0; }
@@ -307,7 +318,6 @@ async function ask(text) {
   trace(`<b>› ${esc(cut(text, 80))}</b>`);
   if (!online) trace(`<span class="r">engine offline: replaying the recorded example</span>`);
   await run(online ? liveEvents(session, text) : demoEvents());
-  $("ask").classList.remove("busy");
 }
 
 // "why": replay the last thinking slowly, from the record
@@ -316,10 +326,9 @@ async function replay() {
   const log = state.log.slice();
   resetRound(true);
   title("REPLAY");
-  $("ask").classList.add("busy");
+  setBusy(true);
   async function* slow() { for (const ev of log) { await sleep(1.2); yield ev; } }
   await run(slow(), false);
-  $("ask").classList.remove("busy");
 }
 
 $("ask").addEventListener("submit", (e) => {
@@ -351,7 +360,7 @@ async function boot() {
   const mode = $("mode");
   mode.textContent = online ? "ENGINE LIVE" : "DEMO REPLAY";
   mode.classList.toggle("live", online);
-  if (!online) $("input").placeholder = `Engine offline. Press enter to watch: "${DEMO_PROMPT}"`;
+  setBusy(false);
   sound.swell();
   look.set(0, 0.4, 0); camera.lookAt(look);
   await tween(4.2, (t) => (U.uBoot.value = t * 2.6), ease.linear);

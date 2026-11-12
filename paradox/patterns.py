@@ -48,8 +48,9 @@ MOVES: list[Move] = [
          "side survives and what one-sidedness is cancelled. It must not be a midpoint or an average."),
     Move("tradeoff", "Price the trade-off",
          "Both values are real and cannot both be fully had; no reframing makes the conflict go away.",
-         "Say plainly that it is a trade-off, name what is lost on each path, and give the criterion "
-         "that should decide it. Do not pretend there is a free resolution."),
+         "Say plainly that it is a trade-off, name what is lost on each path, and give the concrete criterion "
+         "that decides it: under which condition one side wins and under which the other does. Then commit to "
+         "which way the criterion usually falls. Do not pretend there is a free resolution, and do not stop at 'it is a balance'."),
     Move("one_wrong", "Refuse the false tension",
          "The tension is not real: one side rests on a factual mistake or a logical error.",
          "Point to the mistake and say which side stands. Do not invent a synthesis where none is needed.",
