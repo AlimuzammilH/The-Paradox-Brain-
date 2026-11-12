@@ -1,0 +1,30 @@
+{"id": "freedom", "category": "politics", "prompt": "Freedom requires individualism. Freedom requires collective action."}
+{"id": "theseus", "category": "paradox", "prompt": "If every plank of a ship is replaced one by one, is it still the same ship?"}
+{"id": "sorites", "category": "paradox", "prompt": "One grain of sand is not a heap, and adding one grain never turns a non-heap into a heap. So there are no heaps."}
+{"id": "liar", "category": "paradox", "prompt": "This sentence is false."}
+{"id": "free_will", "category": "philosophy", "prompt": "Every event has a prior cause, so our choices are determined. Yet we hold people responsible for their choices."}
+{"id": "tolerance", "category": "politics", "prompt": "A tolerant society must tolerate everything. A tolerant society must not tolerate the intolerant."}
+{"id": "security_privacy", "category": "politics", "prompt": "Mass surveillance keeps people safe. Mass surveillance makes people unfree."}
+{"id": "growth_climate", "category": "economics", "prompt": "Economic growth lifts people out of poverty. Economic growth is destroying the climate."}
+{"id": "min_wage", "category": "economics", "prompt": "A higher minimum wage protects low-paid workers. A higher minimum wage costs low-paid workers their jobs."}
+{"id": "borders", "category": "politics", "prompt": "A nation has the right to control who enters it. People have the right to move to where they can live better."}
+{"id": "tradition", "category": "society", "prompt": "Traditions hold communities together and should be preserved. Traditions keep people stuck in the past and should be questioned."}
+{"id": "ai_jobs", "category": "technology", "prompt": "Automation will free people from drudgery. Automation will leave people without work or purpose."}
+{"id": "meritocracy", "category": "society", "prompt": "Rewards should go to those with the most talent and effort. Talent and effort themselves come from luck of birth."}
+{"id": "wave_particle", "category": "science", "prompt": "Light is a wave. Light is made of particles."}
+{"id": "newcomb", "category": "paradox", "prompt": "A near-perfect predictor puts a million in a closed box only if it predicted you would take that box alone; a second open box always holds a thousand. Should you take one box or both?"}
+{"id": "trolley", "category": "ethics", "prompt": "Pulling the lever to kill one and save five is right because more lives are saved. Pulling the lever is wrong because you would be killing someone who was otherwise safe."}
+{"id": "lying_kindness", "category": "ethics", "prompt": "You should always tell the truth. You should not tell a dying friend that their life's work was a failure."}
+{"id": "career_passion", "category": "personal", "prompt": "Follow your passion and the work will follow. Get good at something useful and passion will follow."}
+{"id": "stability_risk", "category": "personal", "prompt": "Take the stable job while building your own project on the side. Go all in on your own project, because a backup plan becomes the plan."}
+{"id": "art_market", "category": "art", "prompt": "Art should be made for its own sake, not for the market. Artists who ignore the market cannot keep making art."}
+{"id": "planning_markets", "category": "economics", "prompt": "Central planning can direct resources toward what society needs. Markets allocate resources better than any planner can."}
+{"id": "hard_soft_power", "category": "geopolitics", "prompt": "Military strength is what keeps a nation secure. Military buildup makes neighbours feel threatened and makes the nation less secure."}
+{"id": "speech_harm", "category": "politics", "prompt": "Free speech must include speech that offends. Some speech causes real harm and should be restricted."}
+{"id": "ends_means", "category": "ethics", "prompt": "A good enough end justifies harsh means. Harsh means corrupt any end they serve."}
+{"id": "knowledge_doubt", "category": "philosophy", "prompt": "We know many things for certain. Any belief could be mistaken, so we know nothing for certain."}
+{"id": "religion_reason", "category": "philosophy", "prompt": "Faith goes beyond what reason can prove. Belief should follow only from reason and evidence."}
+{"id": "parenting", "category": "personal", "prompt": "Children need firm rules to grow. Children need freedom to grow."}
+{"id": "open_closed_ai", "category": "technology", "prompt": "AI models should be open so everyone can inspect and use them. AI models should be closed because powerful capabilities can be misused."}
+{"id": "cinema_auteur", "category": "art", "prompt": "A film is the vision of its director. A film is the work of hundreds of people."}
+{"id": "fermi", "category": "science", "prompt": "The universe is vast and old enough that intelligent life should be everywhere. We see no sign of anyone."}

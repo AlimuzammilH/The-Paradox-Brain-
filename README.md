@@ -1,159 +1,155 @@
-# **PARADOX**  
-*A Quiet Engine for Hard Thoughts*  
+# **PARADOX**
+*A Quiet Engine for Hard Thoughts*
 
 ---
 
-## **What is Paradox**  ##
-Paradox is a locally run, hybrid neural-symbolic system designed to analyse opposing arguments, identify their core tensions, and generate syntheses that transcend simple compromise. Unlike language models that only summarise or debate superficially, Paradox employs recursive analysis to deconstruct ideological conflicts, weighing logical consistency, contextual relevance, and user-defined preferences.    
-It operates in three phases:   
-1. **Tension Identification** (neural contradiction detection)   
-2. **Synthesis Generation** (symbolic logic + adaptive learning)   
-3. **Iterative Refinement** (user feedback integration)    Built for privacy and precision, it avoids cloud dependencies and runs efficiently on consumer hardware. 
----
+## What is Paradox
 
-## **How It works**  
-### **1. Structure**  
-- **Input Loader**  
-  - Accepts text, cleans it, and splits arguments  
-  - Doesn’t care about tone, only content  
-- **Contradiction Engine**  
-  - Measures tension between ideas (not just similarity)  
-  - Uses a small neural net—efficient, not brilliant  
-- **Symbolic Core**  
-  - Hardcoded dialectical patterns (Hegel, but stripped of pretence)  
-  - Adjusts weights based on user feedback  
-- **Memory**  
-  - Stores arguments as vectors and text  
-  - Retrieves when relevant, forgets when not  
+Paradox is a locally run, hybrid neural-symbolic system for working through opposing arguments. It finds the core tension between them, and builds a synthesis that goes beyond compromise. Language models left alone resolve every conflict the same way: "both sides have a point, balance is key". Paradox is built to make that answer impossible.
 
-### **2. Behavior**  
-- Doesn’t explain itself unless asked  
-- Prefers brevity, but will extend if the input demands  
-- Learns slowly, forgets rarely  
+It runs on your own machine, with any language model you choose, and it learns from how you rate it.
 
 ---
 
-## **How to Use It**  
-### **Basic**  
-```bash  
-python main.py  
-```  
-**Example**:  
-```  
-> Freedom requires individualism  
-> Freedom requires collective action  
-[Output truncated for brevity]  
-``` 
-### **Installation Requirements**  
-#### **Core Dependencies**  
+## How it works
+
+Two kinds of model, with separate jobs:
+
+- **The language model writes.** Any model behind an OpenAI-compatible endpoint: Ollama, LM Studio, llama.cpp, vLLM, or a cloud API. The default is `qwen2.5:7b-instruct` on Ollama.
+- **The NLI model judges.** A DeBERTa-large cross-encoder trained only to answer one question about two sentences: does one *contradict*, *follow from*, or say *nothing* about the other? It cannot be talked into anything. The writer never grades its own work.
+
+Between them sits the **symbolic core**: ten dialectical moves, written down as explicit rules.
+
+| Move | When it applies |
+|---|---|
+| Split the term | a key word means different things to each side |
+| Draw the boundary | each side holds under different conditions |
+| Attack the shared premise | both sides silently assume the same false thing |
+| Put them in sequence | they are different stages of one process |
+| Separate the levels | one speaks of parts, the other of the whole |
+| Find the shared end | same goal, different means (or the reverse) |
+| Lift both into a larger whole | each is a one-sided piece of something bigger (Hegel's *Aufhebung*) |
+| Price the trade-off | the conflict is real; name what is lost and the deciding criterion |
+| Refuse the false tension | one side is simply wrong; no synthesis is owed |
+| Repair the question | the paradox comes from self-reference, vagueness or a badly posed question |
+
+### One round
+
+1. **Frame:** state both sides in their strongest form.
+2. **Atomise:** break each side into short claims that stand on their own.
+3. **Tension:** the NLI model scores every claim against every other and finds the core clash.
+4. **Diagnose:** judge which moves fit this tension; your past ratings reorder them.
+5. **Synthesise:** one candidate per chosen move, each forced into that move's shape.
+6. **Evaluate:** the NLI model scores each candidate:
+   - **grounding:** what it keeps from each side is really in that side
+   - **coherence:** its claim does not contradict what it keeps
+   - **novelty:** it is not one side restated
+   - **mush:** anything that reduces to "both have a point" scores zero, however well written
+7. **Object:** the winner gets its strongest objection. If the NLI model confirms the objection really contradicts it, the objection becomes the next antithesis and the dialectic goes another round.
+
+### In conversation
+
+- **New claim, question, dilemma or paradox:** the full dialectic runs.
+- **Pushing back:** your objection becomes the antithesis, and its last synthesis becomes the thesis. You are the opponent now.
+- **"Why?":** it walks you through its own trace. It doesn't explain itself unless asked.
+- **Ratings (1–5):** they feed back into which moves it reaches for first. It gets sharper *for you*, not for an average user.
+
+### Memory
+
+Every resolved tension is stored with its embedding, in one SQLite file in `~/.paradox/`. Related conclusions come back when a related question does. It learns slowly and forgets rarely: only conclusions you rated badly, or that went unused for six months and scored poorly, are dropped.
+
+---
+
+## How to use it
+
+### Windows
+Double-click **Start Paradox.bat**. The first run installs Python and Ollama if they are missing, pulls the model, and sets up everything else. After that it opens straight into a conversation.
+
+### Anywhere else
 ```bash
-# Python (3.10+)
-pip install torch sentence-transformers faiss-cpu sqlite3 fastapi uvicorn
-
-# For training (optional)
-pip install datasets transformers scikit-learn
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+ollama pull qwen2.5:7b-instruct
+python -m paradox --trace
 ```
 
-#### **For the UI**  
-```bash
-# Frontend (Vue.js)
-npm install -g @vue/cli
-npm install axios vue-router
-
-# Backend (FastAPI)
-pip install fastapi uvicorn python-multipart
+```
+you  Freedom requires individualism. Freedom requires collective action.
+  · core clash ...          (with --trace, each phase shows as it happens)
+paradox  ...
+you  /why
+you  4                      (rate the answer 1-5)
 ```
 
-#### **For GPU Acceleration**  
-```bash
-# NVIDIA (CUDA 11.7)
-pip install torch --extra-index-url https://download.pytorch.org/whl/cu117
+Commands: `/why` (explain the last answer), `/trace` (the raw reasoning, no model in between), `/rate N [note]` or just a digit, `/quit`.
+
+### Any model
+Set these in the environment, or in a `.env` file:
+```
+PARADOX_LLM_URL=http://localhost:11434/v1
+PARADOX_LLM_MODEL=llama3.1:8b
+PARADOX_LLM_KEY=ollama
+PARADOX_MAX_DEPTH=2          # dialectic rounds
+PARADOX_PATTERNS=2           # moves tried per round
 ```
 
-#### **Optional Tools**  
+### API (for the interface)
 ```bash
-# Data preprocessing
-pip install pdfminer.six newspaper3k
+uvicorn paradox.api:app --port 8100
+```
+`POST /api/chat` streams one event per thinking phase (frame, atomise, tension, diagnose, synthesise, evaluate, object, recurse, answer), then the reply. The brain interface lights up as it thinks.
 
-# Monitoring
-pip install prometheus-client
+---
+
+## Does it actually work? The benchmark
+
+Paradox is tested against two opponents on the same language model, across 30 prompts: classic paradoxes, ethics, politics from several directions, economics, science, art and personal decisions.
+
+- **plain:** one call, the model answering as a thoughtful assistant
+- **hegelion:** [Hegelion](https://github.com/Hmbown/Hegelion)'s own thesis / antithesis / synthesis prompts, three separate calls
+
+```bash
+pip install hegelion
+python -m bench.run generate
+python -m bench.run judge
 ```
 
----
+Every pair of answers is judged blind, twice, with the order swapped. A system only wins a criterion if it wins in both orders, which cancels out the judge's position bias. The criteria: steelmanning both sides, finding the crux, getting beyond compromise, honesty about costs, consistency, economy. The NLI model adds automatic scores that involve no language model at all (self-contradiction, mush). Use a stronger judge than the model under test if you can (`PARADOX_JUDGE_URL`, `PARADOX_JUDGE_MODEL`, `PARADOX_JUDGE_KEY`).
 
-### **Hardware Minimums**  
-| Component | Requirement | Notes |  
-|-----------|-------------|-------|  
-| **GPU** | NVIDIA GTX 1660 Ti (6GB VRAM) | Disable with `--cpu` flag |  
-| **RAM** | 16GB | 8GB usable (without Neo4j) |  
-| **Storage** | 50GB SSD | For vector databases + logs |  
+Results will be published here, wins and losses both.
 
 ---
 
-### **First-Run Setup**  
-1. **Download Models**  
-   ```bash
-   mkdir -p models
-   python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2', cache_folder='./models')"
-   ```
+## Hardware
 
-2. **Initialize Databases**  
-   ```bash
-   python -c "from core.memory import MemoryStore; MemoryStore().init_db()"
-   ```
+| | |
+|---|---|
+| GPU | 6 GB VRAM is enough (GTX 1660 Ti) for a 7B model |
+| CPU | runs the NLI and embedding models, so the GPU stays free |
+| RAM | 16 GB |
+| Disk | about 6 GB (language model 4.7 GB, judging models 1 GB) |
 
-3. **Launch**  
-   ```bash
-   # CLI version
-   python main.py
-
-   # Web UI
-   cd frontend && npm run serve
-   uvicorn backend.paradox_api:app --reload
-   ```
-*"Tools should sharpen thought, not replace it."*
-### **Advanced**  
-Train it on your conflicts:  
-```bash  
-python train.py --data ./data/your_arguments.csv --epochs 2  
-```  
-
-### **2. Key Modules (How I Structured It)**  
-| **Module**              | **What It Does**                                                                 | **Why I Added It** |  
-|-------------------------|----------------------------------------------------------------------------------|--------------------|  
-| **Orchestrator**        | Decides which subsystem (neural/symbolic) to use based on input                  | To prevent dumb, one-size-fits-all answers |  
-| **Contradiction Engine**| Uses a tiny neural net to detect logical conflicts (not just keyword matching)    | Because real debate requires understanding tension |  
-| **Symbolic Engine**     | Hardcoded philosophical rules (Hegel, Kant, Rawls)                              | So it doesn’t just parrot Reddit-tier takes |  
-| **Memory Store**        | FAISS + SQLite—remembers past arguments for faster recall                        | Because I hate repeating myself |  
-| **Feedback Loop**       | Learns from my ratings (1-5 stars) and adjusts over time                         | So it gets smarter *for me*, not some average user |  
-
-
-### **UI (Optional)**  
-A dark-mode interface exists. It shows a brain, not because it’s accurate, but because it reminds users this is a tool, and makes it look more intuitive..  
+One answer takes 8–14 model calls. On a 1660 Ti that's one to three minutes. It is a tool for hard thoughts, not quick ones.
 
 ---
 
-## **Why It Exists**  
-- Most debate is performance. This is dissection.  
-- Language models are either too large or too simple. This balances.  
--   I  wanted something that doesn’t flatter, only processes.  
+## Why it exists
+
+- Most debate is performance. This is dissection.
+- Language models are either too large or too simple. This balances.
+- I wanted something that doesn't flatter, only processes.
+
+## Limitations
+
+- Struggles with humour
+- Doesn't handle raw emotion well
+- Will not pretend to care
+- Only as knowledgeable as the language model under it. The structure keeps it honest, not omniscient.
 
 ---
 
-## **Technical Notes**  
-- **Hardware**: Runs on modest GPUs (6GB VRAM minimum)  
-- **Data**: Pre-trained on philosophy/politics, but meant to adapt  
-- **Limitations**:  
-  - Struggles with humour  
-  - Doesn’t handle raw emotion well  
-  - Will not pretend to care  
+## License
+Use it, modify it, but don't claim it as yours.
 
----
-
-## **License**  
-Use it, modify it, but don’t claim it as yours.  
-
----
-
-## **Contact**  
-Not provided. If you understand the tool, you’ll know how to improve it. If you don’t, no explanation will suffice.
+## Contact
+Not provided. If you understand the tool, you'll know how to improve it. If you don't, no explanation will suffice.
