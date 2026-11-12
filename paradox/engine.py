@@ -171,7 +171,10 @@ class Dialectic:
             except (TypeError, ValueError):
                 fits[key] = 0
         ranked = sorted(MOVES, key=lambda m: fits[m.key] / 10 * self.weights(m.key), reverse=True)
-        chosen = [m for m in ranked if fits[m.key] >= 4][: self.per_round] or ranked[:1]
+        # Always let at least two moves compete; a single candidate has nothing to be judged against.
+        chosen = [m for m in ranked if fits[m.key] >= 4][: self.per_round]
+        if len(chosen) < min(2, self.per_round):
+            chosen = ranked[: min(2, self.per_round)]
         self.emit("diagnose", {"crux": data["crux"], "fits": fits,
                                "weights": {k: round(self.weights(k), 3) for k in BY_KEY},
                                "chosen": [m.key for m in chosen]})
