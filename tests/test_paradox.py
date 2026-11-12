@@ -64,6 +64,7 @@ def test_session_objection_continues_the_dialectic():
     assert second.result.rounds[0].antithesis == "That's wrong, institutions crush people."
     assert second.result.rounds[0].thesis == first.result.final.synthesis
     assert s.send("why?").intent == "explain"
+    assert s.classify("That’s wrong, people with nothing to fall back on fight harder.") == "objection"
     assert "Round 1" in s.trace()
 
 

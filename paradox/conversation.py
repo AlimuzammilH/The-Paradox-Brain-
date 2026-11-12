@@ -21,6 +21,8 @@ from .memory import Memory
 from .nli import NLI
 from .patterns import BY_KEY
 
+OBJECTION = re.compile(r"^\s*(no\b|nope|wrong|that'?s (wrong|not|false|bullshit)|that’s (wrong|not|false)|i disagree|disagree|but\b|not true|"
+                       r"rubbish|nonsense|you'?re wrong|you’re wrong)", re.I)
 EXPLAIN = re.compile(r"^\s*(/why|why\b|how did you|explain (your|that|this|how)|show (me )?(your|the) (reasoning|working|steps))", re.I)
 
 
@@ -49,6 +51,8 @@ class Session:
             return "new"
         if EXPLAIN.search(text):
             return "explain"
+        if OBJECTION.search(text):   # don't leave an obvious pushback to the model's judgement
+            return "objection"
         data = self.llm.ask_json(
             VOICE,
             f"Your last answer: {self.last.answer}\n\nUser now says: {text}\n\n"
