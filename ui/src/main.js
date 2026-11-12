@@ -366,7 +366,7 @@ async function boot() {
   await tween(4.2, (t) => (U.uBoot.value = t * 2.6), ease.linear);
   tween(1.5, (t) => (shell.userData.mat.uniforms.uOpacity.value = t));
   await fly([2.35, 0.75, 1.75], [0, -0.02, 0], 1.6, ease.inOut);
-  title("PARADOX");
+  title("THE PARADOX BRAIN");
   phase("READY");
   freeCamera();
   $("input").focus({ preventScroll: true });

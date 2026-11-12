@@ -1,8 +1,8 @@
-# Paradox
+# The Paradox Brain
 
 *A quiet engine for hard thoughts.*
 
-Paradox works through opposing arguments. It finds the point where they actually clash and builds a resolution that goes past compromise. A language model left to itself settles every conflict the same way ("both sides have a point, balance is key"), and Paradox is built so that answer scores zero.
+The Paradox Brain works through opposing arguments. It finds the point where they actually clash and builds a resolution that goes past compromise. A language model left to itself settles every conflict the same way ("both sides have a point, balance is key"), and Paradox is built so that answer scores zero.
 
 It runs on your own machine, with whatever language model you choose, and it adjusts to how you rate it.
 
@@ -126,7 +126,7 @@ One answer takes 8 to 14 model calls, which on a 1660 Ti means one to three minu
 
 ## Licence
 
-Paradox is released under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You can read it, run it, change it and share it for noncommercial purposes: personal study, research and testing, hobby projects, and use by charities, schools, universities, public research bodies and government institutions. Using it in a commercial product or service, or inside a company for commercial work, needs a separate commercial licence. For that, open an issue titled "Commercial licence" on this repository.
+The Paradox Brain is released under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You can read it, run it, change it and share it for noncommercial purposes: personal study, research and testing, hobby projects, and use by charities, schools, universities, public research bodies and government institutions. Using it in a commercial product or service, or inside a company for commercial work, needs a separate commercial licence. For that, open an issue titled "Commercial licence" on this repository.
 
 ## Contact
 

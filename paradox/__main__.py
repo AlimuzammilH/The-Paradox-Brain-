@@ -41,7 +41,7 @@ def main(argv=None) -> int:
             return
         print(f"{DIM}  · {msg}{RESET}", flush=True)
 
-    print(f"Paradox  ·  {config.LLM_MODEL} at {config.LLM_URL}")
+    print(f"The Paradox Brain  ·  {config.LLM_MODEL} at {config.LLM_URL}")
     print("Loading the judging models (first run downloads about 300 MB)...", flush=True)
     session = Session(LLM(), NLI(), Memory(embedder=Embedder()), emit=emit, max_depth=args.depth)
     session.memory.forget()

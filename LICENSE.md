@@ -1,4 +1,4 @@
-Required Notice: Copyright AlimuzammilH (https://github.com/AlimuzammilH/Paradox)
+Required Notice: The Paradox Brain. Copyright AlimuzammilH (https://github.com/AlimuzammilH/Paradox)
 
 # PolyForm Noncommercial License 1.0.0
 
