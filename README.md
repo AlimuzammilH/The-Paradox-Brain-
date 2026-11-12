@@ -2,6 +2,8 @@
 
 *A quiet engine for hard thoughts.*
 
+![The Paradox Brain interface](docs/brain.png)
+
 The Paradox Brain works through opposing arguments. It finds the point where they actually clash and builds a resolution that goes past compromise. A language model left to itself settles every conflict the same way ("both sides have a point, balance is key"), and Paradox is built so that answer scores zero.
 
 It runs on your own machine, with whatever language model you choose, and it adjusts to how you rate it.
