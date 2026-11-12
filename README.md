@@ -100,8 +100,6 @@ python -m bench.run judge
 
 A judge model compares each pair of answers blind, twice, with the order swapped, and a system only wins a criterion if it wins in both orders. That cancels the judge's habit of preferring whichever answer it reads first. The criteria are steelmanning both sides, finding the crux, getting past compromise, honesty about costs, consistency and economy. The NLI model adds scores for self-contradiction and mush that involve no language model at all. A judge stronger than the model under test gives more reliable results (`PARADOX_JUDGE_URL`, `PARADOX_JUDGE_MODEL`, `PARADOX_JUDGE_KEY`).
 
-Results will be published here, wins and losses both.
-
 ## Hardware
 
 | | |
