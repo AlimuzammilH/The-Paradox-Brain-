@@ -11,7 +11,7 @@ catch { Start-Process ollama -ArgumentList "serve" -WindowStyle Hidden; Start-Sl
 
 # keep the PC awake while this runs
 Add-Type -Namespace W -Name P -MemberDefinition '[DllImport("kernel32.dll")] public static extern uint SetThreadExecutionState(uint f);'
-[W.P]::SetThreadExecutionState(0x80000001) | Out-Null
+[W.P]::SetThreadExecutionState([uint32]2147483649) | Out-Null
 
 Write-Host "Installing Hegelion (the comparison system)..."
 .\.venv\Scripts\python -m pip install --quiet hegelion
