@@ -29,6 +29,10 @@ if (-not (Test-Path .venv)) {
     .\.venv\Scripts\python -m pip install -r requirements.txt
 }
 $env:PYTHONIOENCODING = "utf-8"
+# Keep everything inside this folder (judging models, memory), so deleting the folder removes it all
+# and nothing piles up on C:. Only Python and Ollama are installed system-wide.
+$env:HF_HOME = Join-Path $PWD "models"
+$env:PARADOX_HOME = Join-Path $PWD "data"
 if ($Brain) {
     Write-Host "Starting the brain at http://localhost:8100 (close this window to stop)"
     Start-Job { Start-Sleep 6; Start-Process "http://localhost:8100" } | Out-Null
