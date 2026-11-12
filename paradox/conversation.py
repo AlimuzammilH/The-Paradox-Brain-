@@ -60,6 +60,11 @@ class Session:
             '"explain": it asks how or why you reached it. "new": it raises a different claim, question or '
             'dilemma. "chat": anything else.\nReturn key "intent".', keys=["intent"], temperature=0.0)
         intent = str(data["intent"]).lower().strip()
+        if intent == "objection":
+            # The small model calls almost anything an objection. Only accept it if the message really
+            # contradicts the last synthesis; otherwise it is a new question.
+            if self.nli.contradiction(self.last.final.synthesis, text) < 0.4:
+                return "new"
         return intent if intent in {"new", "objection", "explain", "chat"} else "new"
 
     def send(self, text: str) -> Reply:
