@@ -31,9 +31,13 @@ MUSH = [
     "Both sides have valid points and the truth lies somewhere in the middle.",
     "The right answer depends on the situation and on personal values.",
     "What is needed is a balance between the two positions.",
+    # the positive-sounding version: "both together make it richer"
+    "Both elements can coexist and each contributes to a richer, more complete whole.",
+    "Combining the two perspectives produces a better result than either alone.",
 ]
 MUSH_PHRASES = re.compile(r"\b(it depends|strike a balance|finding a balance|both sides have|middle ground|"
-                          r"nuanced approach|best of both worlds|there is no easy answer)\b", re.I)
+                          r"nuanced approach|best of both worlds|there is no easy answer|richer,? more nuanced|"
+                          r"can (both )?(coexist|embody both)|both .{0,40} and .{0,40} contribut)", re.I)
 
 Emit = Callable[[str, dict], None]
 
