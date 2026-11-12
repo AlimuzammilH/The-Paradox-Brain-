@@ -256,7 +256,7 @@ class Dialectic:
 
     # answer -------------------------------------------------------------------------------------
 
-    def write_answer(self, question: str, rounds: list[Round]) -> str:
+    def write_answer(self, question: str, rounds: list[Round], challenge: str = "") -> str:
         last = rounds[-1]
         best = last.best
         lines = [f"Question: {question}",
@@ -271,6 +271,10 @@ class Dialectic:
                   f"Cost: {best.cost}"]
         if last.objection and last.objection_tension >= self.tension_min * 0.6:
             lines.append(f"Objection still standing: {last.objection}")
+        if challenge:
+            lines.append(f"The user just pushed back with: {challenge}\n"
+                         "Your reply must answer that challenge head-on in its first two sentences. "
+                         "If it asks a direct question, give a direct answer to it.")
         answer = self.llm.ask(
             VOICE,
             "\n".join(lines) + "\n\n"
@@ -291,7 +295,7 @@ class Dialectic:
         return answer
 
     def _mushy(self, text: str) -> bool:
-        if MUSH_PHRASES.search(text) or re.search(r"\b(have (their )?merits|balance between|specific context)\b", text, re.I):
+        if MUSH_PHRASES.search(text) or re.search(r"\b(have (their )?merits|balance between|specific context|depend(s|ing)? (up)?on (the )?(context|situation|circumstances))\b", text, re.I):
             return True
         return max(r.entailment for r in self.nli.relations([(text, m) for m in MUSH])) > 0.5
 
@@ -309,6 +313,7 @@ class Dialectic:
     def run(self, text: str, context: str = "", recalled: list[str] | None = None,
             thesis: str | None = None, antithesis: str | None = None) -> Result:
         calls0, secs0 = self.llm.calls, self.llm.seconds
+        objection, antithesis_in = bool(thesis and antithesis), antithesis or ""
         if thesis and antithesis:
             question, kind = text, "objection"
             self.emit("frame", {"question": text, "thesis": thesis, "antithesis": antithesis, "kind": kind})
@@ -328,7 +333,7 @@ class Dialectic:
                 break
             self.emit("recurse", {"depth": depth + 1, "thesis": r.best.synthesis, "antithesis": r.objection})
             thesis, antithesis = r.best.synthesis, r.objection
-        answer = self.write_answer(question, rounds)
+        answer = self.write_answer(question, rounds, challenge=antithesis_in if objection else "")
         return Result(question, kind, answer, rounds, self.llm.calls - calls0, self.llm.seconds - secs0)
 
 
