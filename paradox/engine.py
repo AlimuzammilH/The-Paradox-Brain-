@@ -274,6 +274,8 @@ class Dialectic:
             "Write the reply to the user. Plain prose, usually 80 to 180 words. Open with the resolution itself, "
             "not with a restatement of the question. Give what each side gets right in a clause, not a paragraph. "
             "Name the cost. If an objection is still standing, say it in one sentence at the end. "
+            "Talk about the subject itself: never use the words thesis, antithesis, synthesis or resolution, "
+            "and never describe your own process. "
             "No headings, no lists, no praise of the question. Never write 'both have merits', 'balance', "
             "'it depends' or 'depends on the context': commit to the resolution.", temperature=0.5)
         if self._mushy(answer):   # the writer can undo the synthesis by hedging; give it one strict retry
