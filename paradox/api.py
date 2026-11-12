@@ -5,6 +5,7 @@ POST /api/chat      {"session": "...", "text": "..."}  -> server-sent events, on
 POST /api/rate      {"session": "...", "rating": 1-5, "note": "", "conclusion_id": optional}
 GET  /api/trace?session=...
 GET  /api/health
+GET  /            the brain interface itself
 """
 from __future__ import annotations
 
@@ -14,7 +15,8 @@ import threading
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
+from pathlib import Path
 from pydantic import BaseModel
 
 from .conversation import Session
@@ -105,6 +107,17 @@ def rate(body: RateIn):
 def trace(session: str):
     s = _sessions.get(session)
     return {"trace": s.trace() if s else ""}
+
+
+UI = Path(__file__).resolve().parent.parent / "ui" / "dist" / "index.html"
+
+
+@app.get("/")
+def interface():
+    """The brain interface, built into one file (ui/dist/index.html)."""
+    if UI.exists():
+        return FileResponse(UI)
+    return PlainTextResponse("Interface not built. Run: cd ui && npm install && npm run build", status_code=404)
 
 
 @app.get("/api/health")

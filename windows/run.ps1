@@ -1,4 +1,5 @@
 # Sets up Paradox on Windows the first time (Python, Ollama, model, packages), then starts a conversation.
+param([switch]$Brain)
 $ErrorActionPreference = "Stop"
 Set-Location (Split-Path $PSScriptRoot -Parent)
 $model = if ($env:PARADOX_LLM_MODEL) { $env:PARADOX_LLM_MODEL } else { "qwen2.5:7b-instruct" }
@@ -28,4 +29,10 @@ if (-not (Test-Path .venv)) {
     .\.venv\Scripts\python -m pip install -r requirements.txt
 }
 $env:PYTHONIOENCODING = "utf-8"
-.\.venv\Scripts\python -m paradox --trace @args
+if ($Brain) {
+    Write-Host "Starting the brain at http://localhost:8100 (close this window to stop)"
+    Start-Job { Start-Sleep 6; Start-Process "http://localhost:8100" } | Out-Null
+    .\.venv\Scripts\python -m uvicorn paradox.api:app --port 8100
+} else {
+    .\.venv\Scripts\python -m paradox --trace @args
+}

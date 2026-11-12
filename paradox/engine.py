@@ -274,7 +274,7 @@ class Dialectic:
             "not with a restatement of the question. Give what each side gets right in a clause, not a paragraph. "
             "Name the cost. If an objection is still standing, say it in one sentence at the end. "
             "No headings, no lists, no praise of the question, no 'it depends'.", temperature=0.5)
-        self.emit("answer", {"answer": answer})
+        self.emit("answer", {"answer": answer, "move": best.move, "move_name": BY_KEY[best.move].name, "cost": best.cost})
         return answer
 
     # run ----------------------------------------------------------------------------------------

@@ -5,3 +5,5 @@ __pycache__/
 bench/results/
 node_modules/
 dist/
+!ui/dist/
+ui/node_modules/

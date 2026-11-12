@@ -80,13 +80,11 @@ PARADOX_MAX_DEPTH=2          # dialectic rounds
 PARADOX_PATTERNS=2           # moves tried per round
 ```
 
-The interface talks to an API:
+### The brain
 
-```bash
-uvicorn paradox.api:app --port 8100
-```
+On Windows, double-click `Start Paradox Brain.bat`; elsewhere run `uvicorn paradox.api:app --port 8100` and open http://localhost:8100. You start outside a brain floating in a dark nebula. When you ask something, the camera dives inside and every phase of the thinking plays out where it happens: claims form as stars in the left and right hemispheres, contradictions arc between them, the ring of moves lights up, candidates cross the corpus callosum, and the winning synthesis collapses everything into a supernova before the answer assembles. Sound is off by default. Details in [`ui/`](ui/README.md).
 
-`POST /api/chat` streams one event per thinking phase (frame, atomise, tension, diagnose, synthesise, evaluate, object, recurse, answer) and then the reply, so the brain interface can light up as it thinks.
+The same API serves anyone who wants to build their own front end: `POST /api/chat` streams one event per thinking phase and then the reply.
 
 ## The benchmark
 
