@@ -3,6 +3,8 @@
 $ErrorActionPreference = "Continue"
 Set-Location (Split-Path $PSScriptRoot -Parent)
 if (-not (Test-Path .venv\Scripts\python.exe)) { Write-Host "Run 'Start Paradox.bat' once first to set things up."; exit 1 }
+New-Item -ItemType Directory -Force bench\results | Out-Null
+Start-Transcript -Append -Path bench\results\run.log | Out-Null
 $env:PYTHONIOENCODING = "utf-8"
 $env:HF_HOME = Join-Path $PWD "models"
 $env:PARADOX_HOME = Join-Path $PWD "data"

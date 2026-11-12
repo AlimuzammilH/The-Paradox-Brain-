@@ -23,6 +23,7 @@ import json
 import os
 import sys
 import time
+import traceback
 from pathlib import Path
 
 from paradox import config
@@ -84,19 +85,26 @@ def generate(systems: list[str], limit: int | None) -> None:
     for system in systems:
         out = RESULTS / f"{system}.jsonl"
         done = load(out)
-        for item in items:
-            if item["id"] in done:
-                continue
-            calls0, t0 = llm.calls, time.time()
-            if system == "plain":
-                answer = run_plain(llm, item["prompt"])
-            elif system == "hegelion":
-                answer = run_hegelion(llm, item["prompt"])
-            else:
-                answer = run_paradox(llm, nli, item["prompt"])
-            append(out, {"id": item["id"], "answer": answer, "calls": llm.calls - calls0,
-                         "seconds": round(time.time() - t0, 1), "model": llm.model})
-            print(f"{system:<9} {item['id']:<18} {time.time() - t0:5.0f}s", flush=True)
+        for attempt in (1, 2):                      # second pass retries anything that failed
+            for item in items:
+                if item["id"] in done:
+                    continue
+                calls0, t0 = llm.calls, time.time()
+                try:
+                    if system == "plain":
+                        answer = run_plain(llm, item["prompt"])
+                    elif system == "hegelion":
+                        answer = run_hegelion(llm, item["prompt"])
+                    else:
+                        answer = run_paradox(llm, nli, item["prompt"])
+                except Exception:
+                    log_error(f"generate {system} {item['id']} (attempt {attempt})")
+                    continue
+                row = {"id": item["id"], "answer": answer, "calls": llm.calls - calls0,
+                       "seconds": round(time.time() - t0, 1), "model": llm.model}
+                append(out, row)
+                done[item["id"]] = row
+                print(f"{system:<9} {item['id']:<18} {time.time() - t0:5.0f}s", flush=True)
 
 
 # judging ----------------------------------------------------------------------------------------
@@ -147,11 +155,24 @@ def judge(opponents: list[str]) -> None:
         for iid, item in items.items():
             if (iid, opp) in done or iid not in answers["paradox"] or iid not in answers[opp]:
                 continue
-            verdict = judge_pair(jl, item["prompt"], answers["paradox"][iid]["answer"], answers[opp][iid]["answer"])
+            try:
+                verdict = judge_pair(jl, item["prompt"], answers["paradox"][iid]["answer"], answers[opp][iid]["answer"])
+            except Exception:
+                log_error(f"judge {opp} {iid}")
+                continue
             append(out, {"id": iid, "opponent": opp, "verdict": verdict, "judge": jl.model,
                          "metrics": {"paradox": auto_metrics(nli, answers["paradox"][iid]["answer"]),
                                      opp: auto_metrics(nli, answers[opp][iid]["answer"])}})
             print(f"paradox vs {opp:<9} {iid:<18} overall: {verdict['overall']}", flush=True)
+
+
+def log_error(what: str) -> None:
+    """Print the error and keep going; the full traceback goes to results/errors.log."""
+    tb = traceback.format_exc()
+    print(f"FAILED {what}: {tb.strip().splitlines()[-1]}", flush=True)
+    RESULTS.mkdir(exist_ok=True)
+    with open(RESULTS / "errors.log", "a", encoding="utf-8") as f:
+        f.write(f"--- {time.strftime('%Y-%m-%d %H:%M:%S')} {what}\n{tb}\n")
 
 
 def load_rows(path: Path) -> list[dict]:
