@@ -9,7 +9,9 @@ Every message is one of four things:
 """
 from __future__ import annotations
 
+import json
 import re
+import time
 import uuid
 from dataclasses import dataclass
 
@@ -71,6 +73,7 @@ class Session:
             else:
                 recalled = [f"{h['question']} -> {h['synthesis']}" for h in self.memory.recall(text)]
                 result = self.engine.run(text, context, recalled)
+            self._keep_trace(text, intent, result)
             cid = None
             if result.rounds:
                 first, best = result.rounds[0], result.final
@@ -80,6 +83,18 @@ class Session:
             reply = Reply(result.answer, intent, cid, result)
         self.memory.add_turn(self.id, "paradox", reply.text, reply.conclusion_id)
         return reply
+
+    def _keep_trace(self, text: str, intent: str, result: Result) -> None:
+        """Every answer's full reasoning goes to HOME/traces as JSON, so runs can be inspected and tuned."""
+        try:
+            from . import config
+            folder = config.HOME / "traces"
+            folder.mkdir(parents=True, exist_ok=True)
+            path = folder / f"{time.strftime('%Y%m%d-%H%M%S')}-{self.id}.json"
+            path.write_text(json.dumps({"input": text, "intent": intent, "model": self.llm.model, **result.to_dict()},
+                                       ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+        except Exception:
+            pass   # tracing must never break a conversation
 
     def rate(self, rating: int, note: str = "", conclusion_id: int | None = None) -> None:
         cid = conclusion_id or self.last_id
