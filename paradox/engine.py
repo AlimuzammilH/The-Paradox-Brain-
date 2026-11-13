@@ -37,7 +37,9 @@ MUSH = [
 ]
 MUSH_PHRASES = re.compile(r"\b(it depends|strike a balance|finding a balance|both sides have|middle ground|"
                           r"nuanced approach|best of both worlds|there is no easy answer|richer,? more nuanced|"
-                          r"can (both )?(coexist|embody both)|both .{0,40} and .{0,40} contribut)", re.I)
+                          r"can (both )?(coexist|embody both)|both .{0,40} and .{0,40} contribut|remains? (an )?open|"
+                          r"open question|left unresolved|remains unresolved|consider both|neither overshadows|"
+                          r"the key is to recogni[sz]e|acknowledges? the importance)", re.I)
 
 Emit = Callable[[str, dict], None]
 
@@ -274,27 +276,34 @@ class Dialectic:
                   f"Kept from the antithesis: {best.from_antithesis}",
                   f"Cost: {best.cost}"]
         if last.objection and last.objection_tension >= self.tension_min * 0.6:
-            lines.append(f"Objection still standing: {last.objection}")
+            lines.append(f"Strongest objection to the resolution: {last.objection}")
         if challenge:
             lines.append(f"The user just pushed back with: {challenge}\n"
                          "Your reply must answer that challenge head-on in its first two sentences. "
                          "If it asks a direct question, give a direct answer to it.")
-        answer = self.llm.ask(
-            VOICE,
-            "\n".join(lines) + "\n\n"
-            "Write the reply to the user. Plain prose, usually 80 to 180 words. Open with the resolution itself, "
-            "not with a restatement of the question. Give what each side gets right in a clause, not a paragraph. "
-            "Name the cost. If an objection is still standing, say it in one sentence at the end. "
-            "Talk about the subject itself: never use the words thesis, antithesis, synthesis or resolution, "
-            "and never describe your own process. "
-            "No headings, no lists, no praise of the question. Never write 'both have merits', 'balance', "
-            "'it depends' or 'depends on the context': commit to the resolution.", temperature=0.5)
+        shape = ("Write the reply to the user in plain prose, 150 to 250 words, in this order. "
+                 "First, the strongest honest case for each side, one or two sentences each, specific enough that "
+                 "someone holding that view would recognise it. "
+                 "Then your verdict, stated as a claim you stand behind: say which way it goes, or what both sides "
+                 "get wrong, and why, naming what the disagreement really turns on. "
+                 "Then the cost: what this verdict gives up, said plainly. "
+                 "If an objection is listed, end by answering it in one or two sentences: say why the verdict holds "
+                 "anyway, or exactly where it stops holding. Never end on an open question. ")
+        rules = ("Talk about the subject itself: never use the words thesis, antithesis, synthesis or resolution, "
+                 "and never describe your own process. No headings, no lists, no praise of the question. "
+                 "Never write 'both have merits', 'balance', 'it depends', 'depends on the context', "
+                 "'remains open', 'consider both' or 'the key is to recognise'.")
+        if challenge:
+            shape = shape.replace("First, the strongest", "After answering the challenge, give the strongest")
+        answer = self.llm.ask(VOICE, "\n".join(lines) + "\n\n" + shape + rules, temperature=0.5)
         if self._mushy(answer):   # the writer can undo the synthesis by hedging; give it one strict retry
             answer = self.llm.ask(
                 VOICE,
                 "\n".join(lines) + f"\n\nThis draft hedged instead of committing:\n{answer}\n\n"
-                "Rewrite it, 80 to 160 words. State the resolution as a claim in the first sentence and stand behind it. "
-                "Name the cost plainly. No 'both', no 'balance', no 'context', no 'merits'.", temperature=0.4)
+                "Rewrite it, 150 to 230 words: the strongest case for each side in a sentence or two, then a verdict "
+                "you stand behind with the reason, then the cost, then why the verdict survives the objection. "
+                "No 'both', no 'balance', no 'context', no 'merits', no 'remains open', no closing question.",
+                temperature=0.4)
         self.emit("answer", {"answer": answer, "move": best.move, "move_name": BY_KEY[best.move].name, "cost": best.cost})
         return answer
 

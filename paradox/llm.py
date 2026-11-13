@@ -58,15 +58,17 @@ class LLM:
                          temperature=temperature)
 
     def ask_json(self, system: str, user: str, keys: list[str] | None = None,
-                 temperature: float | None = None, retries: int = 2) -> dict:
+                 temperature: float | None = None, retries: int = 3) -> dict:
         """Ask for a JSON object; retry when the reply is malformed or misses required keys."""
         last: Exception | None = None
+        messages = [{"role": "system", "content": system + " Answer with JSON only."},
+                    {"role": "user", "content": user}]
         for attempt in range(retries + 1):
+            text = ""
             try:
-                text = self.chat([{"role": "system", "content": system + " Answer with JSON only."},
-                                  {"role": "user", "content": user}], json_mode=True, temperature=temperature)
+                text = self.chat(messages, json_mode=True, temperature=temperature)
                 data = parse_json(text)
-                missing = [k for k in keys or [] if k not in data]
+                missing = [k for k in keys or [] if k not in data or data[k] in (None, "")]
                 if missing:
                     raise LLMError(f"missing keys {missing}")
                 return data
@@ -74,4 +76,10 @@ class LLM:
                 if isinstance(e, LLMError) and "unreachable" in str(e):
                     raise
                 last = e
+                # tell the model exactly what was wrong instead of asking the same question again
+                fix = (f"That reply was missing these keys: {', '.join(missing)}." if isinstance(e, LLMError) and "missing keys" in str(e)
+                       else "That reply was not valid JSON.")
+                messages = messages[:2] + [{"role": "assistant", "content": text or "(empty)"},
+                                           {"role": "user", "content": f"{fix} Send the complete JSON object again with all of these keys "
+                                                                       f"filled in: {', '.join(keys or [])}."}]
         raise LLMError(f"model gave no usable JSON after {retries + 1} tries: {last}")
